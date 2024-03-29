@@ -8,9 +8,9 @@ datasource db {
 }
 
 enum Priority {
-  low
-  middle
-  high
+  LOW
+  MIDDLE
+  HIGH
 }
 
 enum Status {
@@ -44,11 +44,14 @@ model Task {
   description String
 
   deadline DateTime
-  priority Priority
-  status   Status
+  priority Priority @default(LOW)
+  status   Status   @default(AWAITS)
 
   userId Int  @map("user_id")
   user   User @relation(fields: [userId], references: [id])
+
+  creatorId Int     @map("creator_id")
+  creator   Creator @relation(fields: [creatorId], references: [id])
 }
 
 model Creator {
@@ -56,15 +59,16 @@ model Creator {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  taskId    Int @map("task_id")
   creatorId Int @map("creator_id")
+
+  Task Task[]
 }
 
-model Supervisor {
+model Supervisor_subordinate {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  supervisorId Int @map("supervisor_id")
-  subordinateId Int  @map("subordinate_id")
+  subordinateId Int @map("responsible_id")
+  supervisorId  Int @map("supervisor_id")
 }

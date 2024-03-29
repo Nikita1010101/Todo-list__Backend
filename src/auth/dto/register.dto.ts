@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator'
+import { IsArray, IsString,  } from 'class-validator'
 
 import { LoginDto } from './login.dto'
 
@@ -11,4 +11,10 @@ export class RegisterDto extends LoginDto {
 
   @IsString()
   patronymic: string
+
+  @IsArray()
+  supervisorsId: number[]
+
+  @IsArray()
+  subordinatesId: number[]
 }

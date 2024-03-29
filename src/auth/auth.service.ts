@@ -12,12 +12,14 @@ import { PrismaService } from '@/prisma.service'
 
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
+import { SupervisorSubordinateService } from '@/models/supervisor/supervisor-subordinate.service'
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
+    private readonly supervisorSubordinateService: SupervisorSubordinateService,
   ) {}
 
   private async checkRefreshToken(refreshToken: string) {
@@ -33,6 +35,11 @@ export class AuthService {
   async delete(refreshToken: string) {
     const result = await this.checkRefreshToken(refreshToken)
     if (!result) throw new UnauthorizedException('User not authorized!')
+
+    await this.supervisorSubordinateService.deleteManyBySupervisorId(+result.id)
+    await this.supervisorSubordinateService.deleteManyBySubordinateId(
+      +result.id,
+    )
 
     return await this.prisma.user.delete({ where: { id: +result.id } })
   }
@@ -68,6 +75,15 @@ export class AuthService {
         surname: dto.surname,
       },
     })
+
+    await this.supervisorSubordinateService.createManySubordinates(
+      user.id,
+      dto.subordinatesId,
+    )
+    await this.supervisorSubordinateService.createManySupervisors(
+      user.id,
+      dto.supervisorsId,
+    )
 
     return await this.generateAuthData(user)
   }
