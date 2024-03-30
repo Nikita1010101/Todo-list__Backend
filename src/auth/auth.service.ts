@@ -12,7 +12,7 @@ import { PrismaService } from '@/prisma.service'
 
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
-import { SupervisorSubordinateService } from '@/models/supervisor/supervisor-subordinate.service'
+import { SupervisorSubordinateService } from '@/models/supervisor-subordinate/supervisor-subordinate.service'
 
 @Injectable()
 export class AuthService {

@@ -7,13 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Priority {
+enum TaskPriority {
   LOW
   MIDDLE
   HIGH
 }
 
-enum Status {
+enum TaskStatus {
   AWAITS
   IN_PROGRESS
   COMPLETED
@@ -44,24 +44,13 @@ model Task {
   description String
 
   deadline DateTime
-  priority Priority @default(LOW)
-  status   Status   @default(AWAITS)
+  priority TaskPriority @default(LOW)
+  status   TaskStatus   @default(AWAITS)
 
   userId Int  @map("user_id")
   user   User @relation(fields: [userId], references: [id])
 
-  creatorId Int     @map("creator_id")
-  creator   Creator @relation(fields: [creatorId], references: [id])
-}
-
-model Creator {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
   creatorId Int @map("creator_id")
-
-  Task Task[]
 }
 
 model Supervisor_subordinate {

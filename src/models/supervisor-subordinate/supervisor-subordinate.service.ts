@@ -24,7 +24,7 @@ export class SupervisorSubordinateService {
     })
   }
 
-  async create(subordinateId: number, supervisorId: number) {
+  async create(supervisorId: number, subordinateId: number) {
     const result = await this.prisma.supervisor_subordinate.create({
       data: {
         subordinateId,
@@ -37,7 +37,7 @@ export class SupervisorSubordinateService {
     return result
   }
 
-  async delete(subordinateId: number, supervisorId: number) {
+  async delete(supervisorId: number, subordinateId: number) {
     const result = await this.prisma.supervisor_subordinate.findFirst({
       where: { subordinateId, supervisorId },
     })
@@ -57,6 +57,18 @@ export class SupervisorSubordinateService {
 
   async deleteManyBySubordinateId(subordinateId: number) {
     await this.prisma.supervisor_subordinate.deleteMany({
+      where: { subordinateId },
+    })
+  }
+
+  async getAllBySupervisorId(supervisorId: number) {
+    return await this.prisma.supervisor_subordinate.findMany({
+      where: { supervisorId },
+    })
+  }
+
+  async getAllBySubordinateId(subordinateId: number) {
+    return await this.prisma.supervisor_subordinate.findMany({
       where: { subordinateId },
     })
   }
