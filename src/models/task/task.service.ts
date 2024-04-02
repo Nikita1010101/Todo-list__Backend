@@ -12,6 +12,18 @@ export class TaskService {
     return await this.prisma.task.findMany({
       where: { OR: [{ userId }, { creatorId: userId }] },
       orderBy: { updatedAt: 'desc' },
+      include: {
+        user: {
+          select: {
+            email: true,
+            id: true,
+            name: true,
+            patronymic: true,
+            surname: true,
+            updatedAt: true,
+          },
+        },
+      },
     })
   }
 

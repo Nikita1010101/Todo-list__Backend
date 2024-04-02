@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
 import { hash, verify } from 'argon2'
@@ -56,6 +55,7 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string) {
+  	if (!refreshToken) throw new UnauthorizedException('Refresh token equals null!')
     const result = await this.checkRefreshToken(refreshToken)
     const user = await this.findUserById(+result.id)
     return await this.generateAuthData(user)
@@ -104,6 +104,7 @@ export class AuthService {
 
   private returnUserFields(user: User) {
     return {
+      id: user.id,
       email: user.email,
       name: user.name,
       surname: user.surname,
@@ -115,10 +116,10 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     })
-    if (!user) throw new NotFoundException('User not found!')
+    if (!user) throw new BadRequestException('User not found!')
 
     const isValid = await verify(user.password, dto.password)
-    if (!isValid) throw new UnauthorizedException('Invalid Password!')
+    if (!isValid) throw new BadRequestException('Invalid password!')
 
     return user
   }

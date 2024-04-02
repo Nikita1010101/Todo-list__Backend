@@ -44,7 +44,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('logout')
-  @Auth()
+  //@Auth()
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const { refreshToken } = req.cookies as RefreshDto
     await this.authService.logout(refreshToken)
